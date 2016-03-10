@@ -78,7 +78,11 @@ module DelayedPaperclip
       @paperclip_definitions ||= if respond_to? :attachment_definitions
         attachment_definitions
       else
-        Paperclip::Tasks::Attachments.definitions_for(self)
+        if Gem::Version.new(Paperclip::VERSION) > Gem::Version.new('3.4.2')
+          Paperclip::AttachmentRegistry.definitions_for(self)
+        else
+          Paperclip::Tasks::Attachments.definitions_for(self)
+        end
       end
     end
   end
